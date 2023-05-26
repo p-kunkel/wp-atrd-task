@@ -31,7 +31,7 @@ func init() {
 
 func TestSecretCheckAndFill(t *testing.T) {
 	s := Secret{
-		ExpiresAt:      1,
+		ExpireAfter:    1,
 		RemainingViews: 1,
 	}
 
@@ -47,7 +47,7 @@ func TestSecretCheckAndFill(t *testing.T) {
 func TestSecretValid(t *testing.T) {
 	s := Secret{
 		Hash:           uuid.NewString(),
-		ExpiresAt:      0,
+		ExpireAfter:    0,
 		RemainingViews: 1,
 	}
 
@@ -55,12 +55,12 @@ func TestSecretValid(t *testing.T) {
 		t.FailNow()
 	}
 
-	s.ExpiresAt = -1
+	s.ExpireAfter = -1
 	if err := s.Valid(); err == nil {
 		assert.FailNow(t, "expected error, got nill")
 	}
 
-	s.ExpiresAt = 2
+	s.ExpireAfter = 2
 	s.RemainingViews = 0
 	if err := s.Valid(); err == nil {
 		assert.FailNow(t, "expected error, got nill")
@@ -70,7 +70,7 @@ func TestSecretValid(t *testing.T) {
 func TestSecretInsert(t *testing.T) {
 	expected := Secret{
 		Hash:           uuid.NewString(),
-		ExpiresAt:      int32(time.Now().Add(3 * time.Second).Unix()),
+		ExpiresAt:      TimePointer(time.Now().Add(3 * time.Second)),
 		RemainingViews: 1,
 		SecretText:     "test",
 	}
@@ -102,7 +102,7 @@ func TestSecretInsert(t *testing.T) {
 func TestSecretGetIfCanBeTaken(t *testing.T) {
 	expected := Secret{
 		Hash:           uuid.NewString(),
-		ExpiresAt:      int32(time.Now().Add(3 * time.Second).Unix()),
+		ExpiresAt:      TimePointer(time.Now().Add(3 * time.Second)),
 		RemainingViews: 1,
 		SecretText:     "test",
 	}
@@ -121,7 +121,7 @@ func TestSecretGetIfCanBeTaken(t *testing.T) {
 		}
 
 		expected.Hash = uuid.NewString()
-		expected.ExpiresAt = int32(time.Now().Add(2 * time.Second).Unix())
+		expected.ExpiresAt = TimePointer(time.Now().Add(2 * time.Second))
 		expected.RemainingViews = 2
 		expected.Insert(tx)
 
@@ -152,7 +152,7 @@ func TestSecretGetIfCanBeTaken(t *testing.T) {
 func TestSecretFindByHash(t *testing.T) {
 	expected := Secret{
 		Hash:           uuid.NewString(),
-		ExpiresAt:      int32(time.Now().Add(time.Minute).Unix()),
+		ExpiresAt:      TimePointer(time.Now().Add(time.Minute)),
 		RemainingViews: 1,
 		SecretText:     "test",
 	}
@@ -181,7 +181,7 @@ func TestSecretFindByHash(t *testing.T) {
 func TestSecretFind(t *testing.T) {
 	expected := Secret{
 		Hash:           uuid.NewString(),
-		ExpiresAt:      int32(time.Now().Add(time.Minute).Unix()),
+		ExpiresAt:      TimePointer(time.Now().Add(time.Minute)),
 		RemainingViews: 1,
 		SecretText:     "test",
 	}

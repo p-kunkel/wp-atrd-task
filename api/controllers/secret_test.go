@@ -83,7 +83,6 @@ func TestGetSecret(t *testing.T) {
 	h := uuid.NewString()
 	s := models.Secret{
 		Hash:           h,
-		ExpiresAt:      0,
 		RemainingViews: 1,
 		SecretText:     "test",
 	}

@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 func mustHaveRecord(DB *gorm.DB) error {
 	if DB.Error != nil {
@@ -10,4 +14,8 @@ func mustHaveRecord(DB *gorm.DB) error {
 		return gorm.ErrRecordNotFound
 	}
 	return nil
+}
+
+func TimePointer(t time.Time) *time.Time {
+	return &t
 }
